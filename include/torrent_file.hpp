@@ -17,6 +17,8 @@ public:
     // Method to get the file data as a string
     std::string toString() const;
 
+    // Get the announce URL for the torrent file
+    std::string getAnnounceURL() const;
 private:
     std::string filePath; // Path to the torrent file
     std::vector<char> fileData; // Vector to hold the file data

@@ -1,4 +1,5 @@
 #include "torrent_file.hpp"
+#include "bencode.hpp"
 #include <iostream>
 #include <iterator>
 
@@ -30,4 +31,19 @@ void TorrentFile::readFile() {
 
 std::string TorrentFile::toString() const {
     return std::string(fileData.begin(), fileData.end());
+}
+
+std::string TorrentFile::getAnnounceURL() const {
+    // Decode the bencoded data to find the announce URL
+    bencode::data decoded = bencode::decode(fileData.data(), fileData.size());
+
+    const auto& dict = std::get<bencode::dict>(decoded);
+
+    auto it = dict.find("announce");
+    if(it == dict.end()) {
+        throw std::runtime_error("Announce URL not found in torrent file");
+    }
+
+    const auto& url = std::get<std::string>(it->second);
+    return url;
 }

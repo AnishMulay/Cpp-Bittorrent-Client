@@ -10,8 +10,7 @@ int main() {
         TorrentFile torrentFile("puppy.torrent");
         torrentFile.readFile();
 
-        std::cout << "Torrent file contents:" << std::endl;
-        std::cout << torrentFile.toString() << std::endl;
+        std::cout << "Tracker URL: " << torrentFile.getAnnounceURL() << std::endl;
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
