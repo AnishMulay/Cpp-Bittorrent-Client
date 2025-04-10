@@ -92,3 +92,24 @@ void Tracker::getPeers(const std::string& announceURL,
 
     close(sockfd);
 }
+
+void Tracker::udpSend(int socket, const char* message, int length, const std::string& hostName, int port) {
+    // Resolve hostName to IP address
+    struct hostent* host = gethostbyname(hostName.c_str());
+    if (!host) {
+        throw std::runtime_error("Failed to resolve host name: " + hostName);
+    }
+
+    // Set up server address
+    struct sockaddr_in serverAddr;
+    std::memset(&serverAddr, 0, sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(port);
+    std::memcpy(&serverAddr.sin_addr, host->h_addr_list[0], host->h_length);
+
+    int bytesSent = sendto(socket, message, length, 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+
+    if (bytesSent < 0) {
+        throw std::runtime_error("Failed to send data");
+    }
+}
